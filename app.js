@@ -1,18 +1,19 @@
 const express = require(`express`);
 const { getAllTopics } = require("./controllers/controller-topics");
 const { errorHandler, handleNotFound } = require("./errors");
+const { getAllEndpoints } = require("./controllers/controller-endpoints");
 
 const app = express();
 
-app.use(express.json());
+//app.use(express.json());
+
+app.get("/api", getAllEndpoints)         //responds with a list of available endpoints
 
 app.get("/api/topics", getAllTopics);   //responds with a list of topics .
 
 app.use(errorHandler);
 
 app.all('*', handleNotFound);
-
-//GET /api  responds with a list of available endpoints
 
 //GET /api/articles/:article_id  responds with a single article by article_id
 
@@ -33,3 +34,5 @@ app.all('*', handleNotFound);
 //GET /api/articles/:article_id (comment count)    adds a comment count to the response when retrieving a single article
 
 module.exports = app;
+
+

@@ -1,7 +1,7 @@
 
 
 
-//GET /api/topics   responds with a list of topics
+//GET /api/topics   responds with a list of topics .
 
 //GET /api  responds with a list of available endpoints
 

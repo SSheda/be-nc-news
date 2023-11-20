@@ -1,7 +1,16 @@
+const express = require(`express`);
+const { getAllTopics } = require("./controllers/controller-topics");
+const { errorHandler, handleNotFound } = require("./errors");
 
+const app = express();
 
+app.use(express.json());
 
-//GET /api/topics   responds with a list of topics .
+app.get("/api/topics", getAllTopics);   //responds with a list of topics .
+
+app.use(errorHandler);
+
+app.all('*', handleNotFound);
 
 //GET /api  responds with a list of available endpoints
 
@@ -22,3 +31,5 @@
 //GET /api/articles (queries)    allows articles to be filtered and sorted
 
 //GET /api/articles/:article_id (comment count)    adds a comment count to the response when retrieving a single article
+
+module.exports = app;

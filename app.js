@@ -1,19 +1,22 @@
 const express = require(`express`);
 const { getAllTopics } = require("./controllers/controller-topics");
-const { errorHandler, handleNotFound } = require("./errors");
 const { getAllEndpoints } = require("./controllers/controller-endpoints");
+const { getArticleById } = require("./controllers/controller-articles");
+const { handlePsqlErrors, handleCustomerErrors, handleServerError, handlePathNotFound } = require("./errors");
 
 const app = express();
 
-app.get("/api", getAllEndpoints)         //responds with a list of available endpoints
+app.get("/api", getAllEndpoints)         
+app.get("/api/topics", getAllTopics);   
+app.get("/api/articles/:article_id", getArticleById)     
 
-app.get("/api/topics", getAllTopics);   //responds with a list of topics .
 
-app.use(errorHandler);
+app.all('*', handlePathNotFound);
 
-app.all('*', handleNotFound);
+app.use (handlePsqlErrors)
+app.use(handleCustomerErrors);
+app.use(handleServerError);
 
-//GET /api/articles/:article_id  responds with a single article by article_id
 
 //GET /api/articles  responds with a list of articles
 

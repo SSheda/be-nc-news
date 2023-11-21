@@ -1,8 +1,9 @@
-const request = require("supertest");                 // Imports supertest for API methods
-const app = require("../app");                        // Imports the express app from app.js
-const db = require("../db/connection");               // Imports the connection pool from connection.js
-const data = require("../db/data/test-data/index");   // Imports the test data
-const seed = require("../db/seeds/seed");             // Imports the seed function from seed.js
+const request = require("supertest");                 
+const app = require("../app");                       
+const db = require("../db/connection");               
+const data = require("../db/data/test-data/index");   
+const seed = require("../db/seeds/seed");  
+const availableApi = require("../endpoints.json")          
 
 beforeEach(() => {
     return seed(data);
@@ -27,7 +28,6 @@ describe("GET /api/topics", () => {
             .expect(200)
             .then((response) => {
                 const topics = response.body.topics;
-                expect(Array.isArray(topics)).toBe(true);
                 expect(topics).toHaveLength(3);
                 topics.forEach((topic) => {
                     expect(topic).toMatchObject({
@@ -37,4 +37,25 @@ describe("GET /api/topics", () => {
                 });
             });
     });    
+});  
+describe("GET /api", () => {
+    test("200: responds with an object describing all the available endpoints on available API", () => {
+        return request(app)
+            .get("/api")
+            .expect(200)
+            .then((response) => {
+                const endpoints = response.body.endpoints;
+                
+                expect(endpoints).toEqual(availableApi)
+               
+                expect(typeof endpoints).toBe("object");
+                for (const key in endpoints){
+                    expect(endpoints[key]).toMatchObject({
+                        description: expect.any(String),
+                        queries: expect.any(Array),
+                        exampleResponse: expect.any(Object)
+                    });
+                }
+            });
+    });          
 });  

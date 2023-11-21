@@ -7,9 +7,6 @@ exports.selectAllEndpoints = () => {
         .then((data) => {
             const endpoints = JSON.parse(data);
 
-            if (endpoints.hasOwnProperty("GET /api")) {
-                delete endpoints["GET /api"]
-            }
             return endpoints;
         });
 };

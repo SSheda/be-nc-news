@@ -5,8 +5,6 @@ const { getAllEndpoints } = require("./controllers/controller-endpoints");
 
 const app = express();
 
-//app.use(express.json());
-
 app.get("/api", getAllEndpoints)         //responds with a list of available endpoints
 
 app.get("/api/topics", getAllTopics);   //responds with a list of topics .

@@ -2,8 +2,8 @@ const request = require("supertest");
 const app = require("../app");                       
 const db = require("../db/connection");               
 const data = require("../db/data/test-data/index");   
-const seed = require("../db/seeds/seed");             
-const { values } = require("../db/data/test-data/articles");
+const seed = require("../db/seeds/seed");  
+const availableApi = require("../endpoints.json")          
 
 beforeEach(() => {
     return seed(data);
@@ -39,12 +39,15 @@ describe("GET /api/topics", () => {
     });    
 });  
 describe("GET /api", () => {
-    test("200: responds with an object describing all the available endpoints on your API", () => {
+    test("200: responds with an object describing all the available endpoints on available API", () => {
         return request(app)
             .get("/api")
             .expect(200)
             .then((response) => {
                 const endpoints = response.body.endpoints;
+                
+                expect(endpoints).toEqual(availableApi)
+               
                 expect(typeof endpoints).toBe("object");
                 for (const key in endpoints){
                     expect(endpoints[key]).toMatchObject({
@@ -54,5 +57,5 @@ describe("GET /api", () => {
                     });
                 }
             });
-    });    
+    });          
 });  

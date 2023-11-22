@@ -143,12 +143,12 @@ describe("GET /api/articles/:article_id/comments", () => {
             .get("/api/articles/1/comments")
             .expect(200)
             .then((response) => {
-                const comments = response.body.comments;
+                const comments = response.body.article;
 
-                expect(comments.length).toBe(9)
+                expect(comments.length).toBe(11)
 
                 comments.forEach((comment) => {
-                    expect(article).toMatchObject({
+                    expect(comment).toMatchObject({
                         comment_id: expect.any(Number),
                         votes: expect.any(Number),
                         created_at: expect.any(String),
@@ -157,6 +157,33 @@ describe("GET /api/articles/:article_id/comments", () => {
                         article_id: expect.any(Number)
                     });
                 });
+            });
+    });
+    test(`200: responds an array of comments should be sorted by date in descending order`, () => {
+        return request(app)
+            .get("/api/articles/1/comments")
+            .expect(200)
+            .then((response) => {
+                const comments = response.body.article;
+
+                expect(comments.length).toBe(11)
+                expect(comments).toBeSortedBy("created_at", { descending: true });
+            });
+    });
+    test(`404: responds with an error message when comments do not exist for article_id`, () => {
+        return request(app)
+            .get("/api/articles/2/comments")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Path not found');
+            });
+    });
+    test(`400: responds with an error message if article_id is not a valid type`, () => {
+        return request(app)
+            .get("/api/articles/banana/comments")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Bad request');
             });
     });
 

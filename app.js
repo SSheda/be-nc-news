@@ -3,6 +3,7 @@ const { getAllTopics } = require("./controllers/controller-topics");
 const { getAllEndpoints } = require("./controllers/controller-endpoints");
 const { getArticleById, getAllArticles } = require("./controllers/controller-articles");
 const { handlePsqlErrors, handleCustomerErrors, handleServerError, handlePathNotFound } = require("./errors");
+const { getCommentsByArticleId } = require("./controllers/controller-comments");
 
 const app = express();
 
@@ -10,7 +11,7 @@ app.get("/api", getAllEndpoints)
 app.get("/api/topics", getAllTopics);   
 app.get("/api/articles/:article_id", getArticleById)     
 app.get("/api/articles", getAllArticles);      
-app.get("/api/articles/:article_id/comments");
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 app.all('*', handlePathNotFound);
 

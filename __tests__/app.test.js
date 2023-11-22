@@ -67,7 +67,7 @@ describe("GET /api/articles/:article_id", () => {
             .expect(200)
             .then((response) => {
                 const article = response.body.article;
-                
+
                 expect(article).toMatchObject({
                     author: expect.any(String),
                     title: expect.any(String),
@@ -77,7 +77,7 @@ describe("GET /api/articles/:article_id", () => {
                     created_at: expect.any(String),
                     votes: expect.any(Number),
                     article_img_url: expect.any(String),
-                  });
+                });
             });
     });
     test(`400: responds with an error message if article_id is not a valid type`, () => {
@@ -95,5 +95,44 @@ describe("GET /api/articles/:article_id", () => {
             .then(({ body }) => {
                 expect(body.msg).toBe('Path not found');
             });
-    });    
-});  
+    });
+});
+
+describe("GET /api/articles", () => {
+    test(`200: responds with an articles array of article objects, each of which should be with the correct properties`, () => {
+        return request(app)
+            .get("/api/articles")
+            .expect(200)
+            .then((response) => {
+                const articles = response.body.article;
+
+                expect(articles.length).toBe(13)
+
+                articles.forEach((article) => {
+                    expect(article).not.toHaveProperty("body"); 
+                    expect(article).toMatchObject({
+                        author: expect.any(String),
+                        title: expect.any(String),
+                        article_id: expect.any(Number),
+                        topic: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        article_img_url: expect.any(String),
+                        comment_count: expect.any(Number)
+                    });
+                });
+            });
+    });  
+    test(`200: responds with an articles array sorted by date in descending order`, () => {
+        return request(app)
+            .get("/api/articles")
+            .expect(200)
+            .then((response) => {
+                const articles = response.body.article;
+                const datesFromArticles = articles.map
+                expect(articles.length).toBe(13);
+                expect(articles).toBeSortedBy("created_at", {descending: true});
+            });
+    });  
+        
+}); 

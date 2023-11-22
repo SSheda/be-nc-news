@@ -19,7 +19,6 @@ exports.selectAllArticles = () => {
                      GROUP BY articles.article_id
                      ORDER BY articles.created_at DESC;`)
     .then((result) => {
-        console.log(result.rows)
         return result.rows;
     });
 }

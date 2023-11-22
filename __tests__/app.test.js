@@ -99,8 +99,7 @@ describe("GET /api/articles/:article_id", () => {
 });
 
 describe("GET /api/articles", () => {
-    test(`200: responds with an articles array of article objects, each of which should have the following
-    properties: author, title, article_id, topic, created_at, votes, article_img_url, comment_count`, () => {
+    test(`200: responds with an articles array of article objects, each of which should be with the correct properties`, () => {
         return request(app)
             .get("/api/articles")
             .expect(200)
@@ -110,6 +109,7 @@ describe("GET /api/articles", () => {
                 expect(articles.length).toBe(13)
 
                 articles.forEach((article) => {
+                    expect(article).not.toHaveProperty("body"); 
                     expect(article).toMatchObject({
                         author: expect.any(String),
                         title: expect.any(String),
@@ -133,5 +133,6 @@ describe("GET /api/articles", () => {
                 expect(articles.length).toBe(13);
                 expect(articles).toBeSortedBy("created_at", {descending: true});
             });
-    });      
+    });  
+        
 }); 

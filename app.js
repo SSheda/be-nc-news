@@ -9,7 +9,8 @@ const app = express();
 app.get("/api", getAllEndpoints)         
 app.get("/api/topics", getAllTopics);   
 app.get("/api/articles/:article_id", getArticleById)     
-app.get("/api/articles", getAllArticles);        
+app.get("/api/articles", getAllArticles);      
+app.get("/api/articles/:article_id/comments");
 
 app.all('*', handlePathNotFound);
 
@@ -19,7 +20,6 @@ app.use(handleServerError);
 
 
 
-//GET /api/articles/:article_id/comments  responds with a list of comments by article_id
 
 //POST /api/articles/:article_id/comments  add a comment by article_id
 

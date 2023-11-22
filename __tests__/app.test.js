@@ -109,7 +109,7 @@ describe("GET /api/articles", () => {
                 expect(articles.length).toBe(13)
 
                 articles.forEach((article) => {
-                    expect(article).not.toHaveProperty("body"); 
+                    expect(article).not.toHaveProperty("body");
                     expect(article).toMatchObject({
                         author: expect.any(String),
                         title: expect.any(String),
@@ -122,7 +122,7 @@ describe("GET /api/articles", () => {
                     });
                 });
             });
-    });  
+    });
     test(`200: responds with an articles array sorted by date in descending order`, () => {
         return request(app)
             .get("/api/articles")
@@ -131,8 +131,33 @@ describe("GET /api/articles", () => {
                 const articles = response.body.article;
                 const datesFromArticles = articles.map
                 expect(articles.length).toBe(13);
-                expect(articles).toBeSortedBy("created_at", {descending: true});
+                expect(articles).toBeSortedBy("created_at", { descending: true });
             });
-    });  
-        
-}); 
+    });
+
+});
+
+describe("GET /api/articles/:article_id/comments", () => {
+    test(`200: responds an array of comments for the given article_id of which each comment should have the correct properties`, () => {
+        return request(app)
+            .get("/api/articles/1/comments")
+            .expect(200)
+            .then((response) => {
+                const comments = response.body.comments;
+
+                expect(comments.length).toBe(9)
+
+                comments.forEach((comment) => {
+                    expect(article).toMatchObject({
+                        comment_id: expect.any(Number),
+                        votes: expect.any(Number),
+                        created_at: expect.any(String),
+                        author: expect.any(String),
+                        body: expect.any(String),
+                        article_id: expect.any(Number)
+                    });
+                });
+            });
+    });
+
+});

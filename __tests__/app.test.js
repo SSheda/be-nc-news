@@ -107,7 +107,6 @@ describe("GET /api/articles", () => {
                 const articles = response.body.article;
 
                 expect(articles.length).toBe(13)
-
                 articles.forEach((article) => {
                     expect(article).not.toHaveProperty("body");
                     expect(article).toMatchObject({
@@ -129,6 +128,7 @@ describe("GET /api/articles", () => {
             .expect(200)
             .then((response) => {
                 const articles = response.body.article;
+
                 const datesFromArticles = articles.map
                 expect(articles.length).toBe(13);
                 expect(articles).toBeSortedBy("created_at", { descending: true });
@@ -143,7 +143,7 @@ describe("GET /api/articles/:article_id/comments", () => {
             .get("/api/articles/1/comments")
             .expect(200)
             .then((response) => {
-                const comments = response.body.article;
+                const comments = response.body.comments;
 
                 expect(comments.length).toBe(11)
 
@@ -164,20 +164,12 @@ describe("GET /api/articles/:article_id/comments", () => {
             .get("/api/articles/1/comments")
             .expect(200)
             .then((response) => {
-                const comments = response.body.article;
+                const comments = response.body.comments;
 
                 expect(comments.length).toBe(11)
                 expect(comments).toBeSortedBy("created_at", { descending: true });
             });
-    });
-    test(`404: responds with an error message when comments do not exist for article_id`, () => {
-        return request(app)
-            .get("/api/articles/2/comments")
-            .expect(404)
-            .then(({ body }) => {
-                expect(body.msg).toBe('Path not found');
-            });
-    });
+    });    
     test(`400: responds with an error message if article_id is not a valid type`, () => {
         return request(app)
             .get("/api/articles/banana/comments")
@@ -186,5 +178,21 @@ describe("GET /api/articles/:article_id/comments", () => {
                 expect(body.msg).toBe('Bad request');
             });
     });
-
+    test(`200: responds with empty array if article_id is valid but has no associated comments.`, () => {
+        return request(app)
+            .get("/api/articles/2/comments")
+            .expect(200)
+            .then((response) => {
+                const comments = response.body.comments;
+                expect(comments).toEqual([]);
+            });
+    });
+    test(`404: responds with an error message if article_id is not exist`, () => {
+        return request(app)
+            .get("/api/articles/25/comments")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Path not found');
+            });
+    });
 });

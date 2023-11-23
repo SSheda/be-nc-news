@@ -107,7 +107,6 @@ describe("GET /api/articles", () => {
                 const articles = response.body.article;
 
                 expect(articles.length).toBe(13)
-
                 articles.forEach((article) => {
                     expect(article).not.toHaveProperty("body");
                     expect(article).toMatchObject({
@@ -129,6 +128,7 @@ describe("GET /api/articles", () => {
             .expect(200)
             .then((response) => {
                 const articles = response.body.article;
+
                 const datesFromArticles = articles.map
                 expect(articles.length).toBe(13);
                 expect(articles).toBeSortedBy("created_at", { descending: true });
@@ -145,10 +145,10 @@ describe("GET /api/articles/:article_id/comments", () => {
             .then((response) => {
                 const comments = response.body.comments;
 
-                expect(comments.length).toBe(9)
+                expect(comments.length).toBe(11)
 
                 comments.forEach((comment) => {
-                    expect(article).toMatchObject({
+                    expect(comment).toMatchObject({
                         comment_id: expect.any(Number),
                         votes: expect.any(Number),
                         created_at: expect.any(String),
@@ -159,5 +159,40 @@ describe("GET /api/articles/:article_id/comments", () => {
                 });
             });
     });
+    test(`200: responds an array of comments should be sorted by date in descending order`, () => {
+        return request(app)
+            .get("/api/articles/1/comments")
+            .expect(200)
+            .then((response) => {
+                const comments = response.body.comments;
 
+                expect(comments.length).toBe(11)
+                expect(comments).toBeSortedBy("created_at", { descending: true });
+            });
+    });    
+    test(`400: responds with an error message if article_id is not a valid type`, () => {
+        return request(app)
+            .get("/api/articles/banana/comments")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Bad request');
+            });
+    });
+    test(`200: responds with empty array if article_id is valid but has no associated comments.`, () => {
+        return request(app)
+            .get("/api/articles/2/comments")
+            .expect(200)
+            .then((response) => {
+                const comments = response.body.comments;
+                expect(comments).toEqual([]);
+            });
+    });
+    test(`404: responds with an error message if article_id is not exist`, () => {
+        return request(app)
+            .get("/api/articles/25/comments")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Path not found');
+            });
+    });
 });

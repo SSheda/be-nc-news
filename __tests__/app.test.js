@@ -268,3 +268,95 @@ describe("POST /api/articles/:article_id/comments", () => {
             });
     });
 });
+describe("PATCH /api/articles/:article_id", () => {
+    test(`200: respons with updated only article's votes property, where votes are incremented`, () => {
+        const voteChanges = { inc_votes: 100 };
+        return request(app)
+            .patch("/api/articles/10")
+            .send(voteChanges)
+            .expect(200)
+            .then((response) => {
+                const updatedArticle = response.body.article;
+                expect(updatedArticle).toEqual({
+                    article_id: 10,
+                    title: "Seven inspirational thought leaders from Manchester UK",
+                    topic: "mitch",
+                    author: "rogersop",
+                    body: "Who are we kidding, there is only one, and it's Mitch!",
+                    created_at: expect.any(String),
+                    votes: 100,
+                    article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+                });
+            });
+    });
+    test(`200: respons with updated only article's votes property, where votes are decremented`, () => {
+        const voteChanges = { inc_votes: -80 };
+        return request(app)
+            .patch("/api/articles/10")
+            .send(voteChanges)
+            .expect(200)
+            .then((response) => {
+                const updatedArticle = response.body.article;
+                expect(updatedArticle).toEqual({
+                    article_id: 10,
+                    title: "Seven inspirational thought leaders from Manchester UK",
+                    topic: "mitch",
+                    author: "rogersop",
+                    body: "Who are we kidding, there is only one, and it's Mitch!",
+                    created_at: expect.any(String),
+                    votes: -80,
+                    article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+                });
+            });
+    });
+    test(`404: responds with an error message if article_id does not exist`, () => {
+        const voteChanges = { inc_votes: 10 };
+        return request(app)
+            .patch("/api/articles/25")
+            .send(voteChanges)
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Path not found');
+            });
+    });
+    test(`400: responds with an error message if article_id is not a valid type`, () => {
+        const voteChanges = { inc_votes: 10 };
+        return request(app)
+            .patch("/api/articles/banana")
+            .send(voteChanges)
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Bad request');
+            });
+    });
+    test("400: responds with an error message if votes has invalid key name", () => {
+        const voteChanges = { banana: 10 };
+        return request(app)
+            .patch("/api/articles/10")
+            .send(voteChanges)
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad request");
+            })
+    });
+    test("200: respons with updated article's votes property, and ignores other keys", () => {
+        const voteChanges = { inc_votes: 10, banana: 10 };
+        return request(app)
+            .patch("/api/articles/10")
+            .send(voteChanges)
+            .expect(200)
+            .then((response) => {
+                const updatedArticle = response.body.article;
+                expect(updatedArticle).toEqual({
+                    article_id: 10,
+                    title: "Seven inspirational thought leaders from Manchester UK",
+                    topic: "mitch",
+                    author: "rogersop",
+                    body: "Who are we kidding, there is only one, and it's Mitch!",
+                    created_at: expect.any(String),
+                    votes: 10,
+                    article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+                });
+            });
+    });
+});

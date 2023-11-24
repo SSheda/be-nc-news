@@ -18,11 +18,23 @@ exports.selectAllArticles = () => {
                      ON comments.article_id = articles.article_id
                      GROUP BY articles.article_id
                      ORDER BY articles.created_at DESC;`)
-    .then((result) => {
-        return result.rows;
-    });
+        .then((result) => {
+            return result.rows;
+        });
+}
+exports.changeArticleById = (articleId, newVotes) => {
+    if (!newVotes.inc_votes ) {
+        return Promise.reject({ status: 400, msg: "Bad request" })
+    }
+    else {
+        return db.query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`, [newVotes.inc_votes, articleId])
+            .then((result) => {
+                if (result.rows.length === 0) {
+                    return Promise.reject({ status: 404, msg: 'Path not found' })
+                }
+                return result.rows[0];
+            });
+    }
 }
 
 
-
-                     

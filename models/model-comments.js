@@ -10,3 +10,19 @@ exports.selectCommentsByArticleId = (articleId) => {
         });
 }
 
+exports.insertComment = (articleId, newComment) => {
+    const {body, username} = newComment;
+    let queryString = "INSERT INTO comments (body, author, article_id) VALUES ($1, $2, $3) RETURNING *;"
+    const queryValues = [body, username, articleId]  
+    if(!newComment.body || !newComment.username || Object.keys(newComment).length> 2){
+        return Promise.reject({status: 400, msg: "Bad Request"})
+    }
+    else{
+        return db.query(queryString, queryValues)
+        .then(({rows}) => {
+            return rows[0];
+        })
+    }
+    
+}
+

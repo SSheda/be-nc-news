@@ -23,7 +23,7 @@ exports.selectAllArticles = () => {
         });
 }
 exports.changeArticleById = (articleId, newVotes) => {
-    if (!newVotes.inc_votes || Object.keys(newVotes).length!==1) {
+    if (!newVotes.inc_votes ) {
         return Promise.reject({ status: 400, msg: "Bad request" })
     }
     else {

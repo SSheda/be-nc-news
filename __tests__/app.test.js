@@ -277,7 +277,8 @@ describe("PATCH /api/articles/:article_id", () => {
             .expect(200)
             .then((response) => {
                 const updatedArticle = response.body.article;
-                expect(updatedArticle).toEqual({article_id: 10,
+                expect(updatedArticle).toEqual({
+                    article_id: 10,
                     title: "Seven inspirational thought leaders from Manchester UK",
                     topic: "mitch",
                     author: "rogersop",
@@ -338,14 +339,24 @@ describe("PATCH /api/articles/:article_id", () => {
                 expect(body.msg).toBe("Bad request");
             })
     });
-    test("400: responds with an error message if there is more then one key", () => {
-        const voteChanges = { inc_votes: 10, banana:10 };
+    test("200: respons with updated article's votes property, and ignores other keys", () => {
+        const voteChanges = { inc_votes: 10, banana: 10 };
         return request(app)
             .patch("/api/articles/10")
             .send(voteChanges)
-            .expect(400)
-            .then(({ body }) => {
-                expect(body.msg).toBe("Bad request");
-            })
+            .expect(200)
+            .then((response) => {
+                const updatedArticle = response.body.article;
+                expect(updatedArticle).toEqual({
+                    article_id: 10,
+                    title: "Seven inspirational thought leaders from Manchester UK",
+                    topic: "mitch",
+                    author: "rogersop",
+                    body: "Who are we kidding, there is only one, and it's Mitch!",
+                    created_at: expect.any(String),
+                    votes: 10,
+                    article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+                });
+            });
     });
 });

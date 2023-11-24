@@ -331,7 +331,7 @@ describe("PATCH /api/articles/:article_id", () => {
     test("400: responds with an error message if votes has invalid key name", () => {
         const voteChanges = { banana: 10 };
         return request(app)
-            .patch("/api/articles/banana")
+            .patch("/api/articles/10")
             .send(voteChanges)
             .expect(400)
             .then(({ body }) => {
@@ -341,7 +341,7 @@ describe("PATCH /api/articles/:article_id", () => {
     test("400: responds with an error message if there is more then one key", () => {
         const voteChanges = { inc_votes: 10, banana:10 };
         return request(app)
-            .patch("/api/articles/banana")
+            .patch("/api/articles/10")
             .send(voteChanges)
             .expect(400)
             .then(({ body }) => {

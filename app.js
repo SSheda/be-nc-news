@@ -3,15 +3,20 @@ const { getAllTopics } = require("./controllers/controller-topics");
 const { getAllEndpoints } = require("./controllers/controller-endpoints");
 const { getArticleById, getAllArticles } = require("./controllers/controller-articles");
 const { handlePsqlErrors, handleCustomerErrors, handleServerError, handlePathNotFound } = require("./errors");
-const { getCommentsByArticleId } = require("./controllers/controller-comments");
+const { getCommentsByArticleId, postSingleComment} = require("./controllers/controller-comments");
 
 const app = express();
+
+app.use(express.json());
 
 app.get("/api", getAllEndpoints)         
 app.get("/api/topics", getAllTopics);   
 app.get("/api/articles/:article_id", getArticleById)     
 app.get("/api/articles", getAllArticles);      
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
+app.post("/api/articles/:article_id/comments", postSingleComment) 
+  
+
 
 app.all('*', handlePathNotFound);
 
@@ -22,7 +27,6 @@ app.use(handleServerError);
 
 
 
-//POST /api/articles/:article_id/comments  add a comment by article_id
 
 //PATCH /api/articles/:article_id   updates an article by article_id
 

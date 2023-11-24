@@ -169,7 +169,7 @@ describe("GET /api/articles/:article_id/comments", () => {
                 expect(comments.length).toBe(11)
                 expect(comments).toBeSortedBy("created_at", { descending: true });
             });
-    });    
+    });
     test(`400: responds with an error message if article_id is not a valid type`, () => {
         return request(app)
             .get("/api/articles/banana/comments")
@@ -187,12 +187,84 @@ describe("GET /api/articles/:article_id/comments", () => {
                 expect(comments).toEqual([]);
             });
     });
-    test(`404: responds with an error message if article_id is not exist`, () => {
+    test(`404: responds with an error message if article_id does not exist`, () => {
         return request(app)
             .get("/api/articles/25/comments")
             .expect(404)
             .then(({ body }) => {
                 expect(body.msg).toBe('Path not found');
+            });
+    });
+});
+describe("POST /api/articles/:article_id/comments", () => {
+    test(`201: respons with the posted comment which is an object with correct properties`, () => {
+        const newComment = {
+            body: "My new comment",
+            username: "icellusedkars"
+        };
+        return request(app)
+            .post("/api/articles/12/comments")
+            .send(newComment)
+            .expect(201)
+            .then((response) => {
+                const postedComment = response.body.comment;
+                expect(postedComment).toEqual({
+                    comment_id: 19,
+                    body: expect.any(String),
+                    article_id: 12,
+                    author: expect.any(String),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String)
+                });
+            });
+    });
+    test(`404: responds with an error message if article_id does not exist`, () => {
+        const newComment = {
+            body: "My new comment",
+            username: "icellusedkars"
+        };
+        return request(app)
+            .post("/api/articles/25/comments")
+            .send(newComment)
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Path not found');
+            });
+    });
+    test(`400: responds with an error message if article_id is not a valid type`, () => {
+        const newComment = {
+            body: "My new comment",
+            username: "icellusedkars"
+        };
+        return request(app)
+            .post("/api/articles/bannana/comments")
+            .send(newComment)
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Bad request');
+            });
+    });
+    test(`404: responds with an error message if user does not exist`, () => {
+        const newComment = {
+            body: "My new comment",
+            username: "jgjjh"
+        };
+        return request(app)
+            .post("/api/articles/12/comments")
+            .send(newComment)
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Path not found');
+            });
+    });
+    test("400: responds with an error message if comment has invalid keys structure", () => {
+        const newComment = { username: "butter_bridge" }
+        return request(app)
+            .post("/api/articles/11/comments")
+            .send(newComment)
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad Request");
             });
     });
 });

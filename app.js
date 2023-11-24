@@ -1,7 +1,7 @@
 const express = require(`express`);
 const { getAllTopics } = require("./controllers/controller-topics");
 const { getAllEndpoints } = require("./controllers/controller-endpoints");
-const { getArticleById, getAllArticles } = require("./controllers/controller-articles");
+const { getArticleById, getAllArticles, patchArticleById } = require("./controllers/controller-articles");
 const { handlePsqlErrors, handleCustomerErrors, handleServerError, handlePathNotFound } = require("./errors");
 const { getCommentsByArticleId, postSingleComment} = require("./controllers/controller-comments");
 
@@ -15,6 +15,7 @@ app.get("/api/articles/:article_id", getArticleById)
 app.get("/api/articles", getAllArticles);      
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.post("/api/articles/:article_id/comments", postSingleComment) 
+app.patch("/api/articles/:article_id", patchArticleById)
   
 
 
@@ -28,7 +29,6 @@ app.use(handleServerError);
 
 
 
-//PATCH /api/articles/:article_id   updates an article by article_id
 
 //DELETE /api/comments/:comment_id   deletes a comment by comment_id
 

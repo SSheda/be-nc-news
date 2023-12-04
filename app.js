@@ -3,7 +3,7 @@ const { getAllTopics } = require("./controllers/controller-topics");
 const { getAllEndpoints } = require("./controllers/controller-endpoints");
 const { getArticleById, getAllArticles, patchArticleById } = require("./controllers/controller-articles");
 const { handlePsqlErrors, handleCustomerErrors, handleServerError, handlePathNotFound } = require("./errors");
-const { getCommentsByArticleId, postSingleComment} = require("./controllers/controller-comments");
+const { getCommentsByArticleId, postSingleComment, deleteCommentById} = require("./controllers/controller-comments");
 
 const app = express();
 
@@ -16,6 +16,7 @@ app.get("/api/articles", getAllArticles);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.post("/api/articles/:article_id/comments", postSingleComment) 
 app.patch("/api/articles/:article_id", patchArticleById)
+app.delete("/api/comments/:comment_id", deleteCommentById)
   
 
 
@@ -30,7 +31,6 @@ app.use(handleServerError);
 
 
 
-//DELETE /api/comments/:comment_id   deletes a comment by comment_id
 
 //GET /api/users  responds with a list of users
 

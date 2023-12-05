@@ -1,4 +1,4 @@
-const { insertComment } = require("../models/model-comments");
+const { insertComment, deleteSingleComment } = require("../models/model-comments");
 const { selectCommentsByArticleId } = require("../models/model-comments");
 const { checkExists } = require("../utils/utils-functions");
 
@@ -31,4 +31,13 @@ exports.postSingleComment = (req, res, next) => {
       res.status(201).send({ comment });
     })
     .catch(next);
+}
+
+exports.deleteCommentById = (req, res, next) => {
+  const {comment_id} =req.params
+  deleteSingleComment(comment_id)
+  .then(() => {
+    res.status(204).send({});
+  })
+  .catch(next);
 }

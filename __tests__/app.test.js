@@ -360,3 +360,34 @@ describe("PATCH /api/articles/:article_id", () => {
             });
     });
 });
+describe("DELETE /api/comments/:comment_id", () => {
+    test(`204: deletes comment and respons with 204 status error, comment has no content`, () => {
+        return request(app)
+            .delete("/api/comments/1")
+            .expect(204)
+    });
+    test(`404: responds with error 404 status when used comment id that was deleted`, () => {
+        return request(app)
+            .get("/api/comments/1")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Path not found');
+            });
+    });
+    test(`404: responds with error 404 status when used non-existed comment id `, () => {
+        return request(app)
+            .get("/api/comments/88")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Path not found');
+            });
+    });
+    test(`400: responds with an error message if comment_id is not a valid type`, () => {
+        return request(app)
+            .delete("/api/comments/banana")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Bad request');
+            });
+    });
+});
